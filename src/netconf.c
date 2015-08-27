@@ -207,8 +207,8 @@ void LwIP_Periodic_Handle(__IO uint32_t localtime)
   }
   
 #endif
-	
-	if (localtime - UpdateTimer >= 60 * 1000UL)
+	// update sensors per time
+	if (localtime - UpdateTimer >= 5 * 60 * 1000UL)
   {
     UpdateTimer = localtime;
 		update_sensors();
