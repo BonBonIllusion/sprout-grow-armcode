@@ -44,5 +44,5 @@
 .\stm32f4_evb\stm32f4xx_it.o: ..\..\..\Utilities\STM32_EVAL\STM32F4_EVB\STM32f4_evb_fsmc_psram.h
 .\stm32f4_evb\stm32f4xx_it.o: ..\inc\tcp_echoclient.h
 .\stm32f4_evb\stm32f4xx_it.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log.h
-.\stm32f4_evb\stm32f4xx_it.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log_conf.h
+.\stm32f4_evb\stm32f4xx_it.o: ..\inc\lcd_log_conf.h
 .\stm32f4_evb\stm32f4xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

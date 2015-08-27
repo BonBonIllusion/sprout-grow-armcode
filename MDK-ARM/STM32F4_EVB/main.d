@@ -64,7 +64,10 @@
 .\stm32f4_evb\main.o: ..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\lwip/netif.h
 .\stm32f4_evb\main.o: ..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\ipv4\lwip/icmp.h
 .\stm32f4_evb\main.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log.h
-.\stm32f4_evb\main.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log_conf.h
+.\stm32f4_evb\main.o: ..\inc\lcd_log_conf.h
 .\stm32f4_evb\main.o: ..\dht11\dht11\dht11.h
 .\stm32f4_evb\main.o: ..\dht11\gpio\gpio.h
 .\stm32f4_evb\main.o: ..\dht11\timer\timer.h
+.\stm32f4_evb\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\stm32f4_evb\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\stm32f4_evb\main.o: ..\..\Motor_LED_Control\Motor_LED_Control.h

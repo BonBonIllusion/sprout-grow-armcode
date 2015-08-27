@@ -1,6 +1,7 @@
 .\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log.c
 .\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log.h
-.\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\Common\lcd_log_conf.h
+.\stm32f4_evb\lcd_log.o: ..\inc\lcd_log_conf.h
+.\stm32f4_evb\lcd_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\STM32F4_EVB\stm32f4_evb_lcd.h
 .\stm32f4_evb\lcd_log.o: ..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
 .\stm32f4_evb\lcd_log.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.3.0\CMSIS\Include\core_cm4.h
@@ -38,5 +39,4 @@
 .\stm32f4_evb\lcd_log.o: ..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_wwdg.h
 .\stm32f4_evb\lcd_log.o: ..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc\misc.h
 .\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\STM32F4_EVB\../Common/fonts.h
-.\stm32f4_evb\lcd_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\stm32f4_evb\lcd_log.o: ..\..\..\Utilities\STM32_EVAL\Common\stm32_eval_legacy.h

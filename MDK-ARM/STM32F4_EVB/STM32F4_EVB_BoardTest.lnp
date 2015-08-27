@@ -78,6 +78,7 @@
 ".\stm32f4_evb\dht11.o"
 ".\stm32f4_evb\gpio.o"
 ".\stm32f4_evb\timer.o"
+".\stm32f4_evb\motor_led_control.o"
 --library_type=microlib --strict --scatter ".\STM32F4_EVB\STM32F4_EVB_BoardTest.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
