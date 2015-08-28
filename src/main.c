@@ -66,7 +66,7 @@ static __IO uint32_t uwTimingDelay;
 
 RTC_TimeTypeDef RTC_TimeStruct;
 RTC_DateTypeDef RTC_DateStruct;
-
+int Enter_Water = 0;     //0 for cant enter Water, 1 for can enter Water
 int Soak_Drain_Time = 5; //in min.  when soaking, the period should end a little earlier for draining
 int Soak_Drain = 1;      //when soaking, decides which action is been boing. 
 												 //0 for not in soak period. 1 for in soaking. 2 for in draining
@@ -94,16 +94,16 @@ struct Soak_Time
 	char *ch_hour;
 	char *ch_min;
 	
-
+	long int start_epoch;
 	
-	//int start_year;
 	int start_mon;
 	int start_day;
 	int start_hour;
 	int start_min;
 	int start_sec;
 	
-	//int end_year;
+	long int end_epoch;
+	
 	int end_mon;
 	int end_day;
 	int end_hour;
@@ -120,6 +120,7 @@ struct Soak_Time *soak_time_cur = NULL;
 struct Soak_Time *soak_time_prev = NULL;
 int soak_time_end_hour;
 int soak_time_end_min;
+long int soak_time_end_epoch;
 
 struct Water_Mode_Time // 2 mode. 1st for short time, 2nd for long time
 {
@@ -127,10 +128,13 @@ struct Water_Mode_Time // 2 mode. 1st for short time, 2nd for long time
 	char *ch_hour;
 	char *ch_min;
 	
+	long int start_epoch;
 	
 	int start_hour;
 	int start_min;
 	int start_sec;
+	
+	long int end_epoch;
 	
 	int end_hour;
 	int end_min;
@@ -142,6 +146,8 @@ struct Water_Mode_Time // 2 mode. 1st for short time, 2nd for long time
 struct Water_Mode_Time *water_time_head = NULL;
 struct Water_Mode_Time *water_time_cur = NULL;
 struct Water_Mode_Time *water_time_prev = NULL;
+int water_start_day;
+
 
 struct Light_Time 
 {
@@ -149,14 +155,16 @@ struct Light_Time
 	char *ch_hour;
 	char *ch_min;
 	
-	int start_year;
+	long int start_epoch;
+	
 	int start_mon;
 	int start_day;
 	int start_hour;
 	int start_min;
 	int start_sec;
 	
-	int end_year;
+	long int end_epoch;
+	
 	int end_mon;
 	int end_day;
 	int end_hour;
@@ -222,6 +230,21 @@ void Time_Date_Setting(u16 year, u8 mon, u8 day, u8 hour, u8 min, u8 sec)
 //what I coded would not do well, because I can't deal with the overnight problem
 //and if I solve the overnight problem, I have to be careful of the Water fun
 //there may be Water fun conflicts Soak fun =>>Water fun starts at 2 am but Soak fun ends at 3 am
+long int Epoch_Converter(int year, int mon, int mday, int hour, int min, int sec)
+{
+	time_t n;
+  struct tm time;
+		
+	time.tm_year = year - 1900;
+	time.tm_mon = mon - 1;
+	time.tm_mday = mday;
+	time.tm_hour = hour;
+	time.tm_min = min;
+	time.tm_sec = sec;
+
+ 	
+}
+
 void Soak(int day, int hour, int min)  
 {
 	
@@ -270,24 +293,33 @@ void Soak(int day, int hour, int min)
 		}
 	}
 }
-void Water(int hour, int min, int sec)
+void Water(int day, int hour, int min, int sec)
 {	
-	if(water_time_cur->start_hour == hour && water_time_cur->start_min == min && water_time_cur->start_sec == sec)
-	{		
-		Motor_On();
-	}
-	else if(water_time_cur->end_hour == hour && water_time_cur->end_min == min && water_time_cur->end_sec == sec)
+	if(water_start_day == day)
 	{
-		Motor_Off();
-		if(water_time_cur->next == NULL)
-		{
-			water_time_cur = water_time_head;
+		Enter_Water = 1;
+	}
+	
+	if(Soak_Drain == 0 && Enter_Water == 1)
+	{
+		if(water_time_cur->start_hour == hour && water_time_cur->start_min == min && water_time_cur->start_sec == sec)
+		{		
+			Motor_On();
 		}
-		else
+		else if(water_time_cur->end_hour == hour && water_time_cur->end_min == min && water_time_cur->end_sec == sec)
 		{
 			water_time_cur = water_time_cur->next;
 		}		
 	}
+			{
+				water_time_cur = water_time_head;
+			}
+			else
+			{
+				water_time_cur = water_time_cur->next;
+			}		
+		}
+	}	
 }
 
 
@@ -325,7 +357,8 @@ void Soak_Str_Processing(int soak_total, int soak_change) //passed test
 {
 	int i = 0;
 	int times = soak_total/soak_change;
-		
+	struct tm *time_ptr;
+	
 	for(i = 0; i < times; i++)
 	{
 		soak_time_cur = (struct Soak_Time *)malloc(sizeof(struct Soak_Time));
@@ -372,17 +405,28 @@ void Soak_Str_Processing(int soak_total, int soak_change) //passed test
 		
 		soak_time_prev = soak_time_cur;
 	}
-	
-	soak_time_cur = soak_time_head;
-	soak_time_end_hour = init_time.hour + soak_total;
-	soak_time_end_min = init_time.min;
+	if(soak_time_head != NULL)
+	{
+		soak_time_cur = soak_time_head;
+		soak_time_end_hour = init_time.hour + soak_total; //if init_time add soak_total over 24 there would be prblem
+		soak_time_end_min = init_time.min;
+		soak_time_end_epoch = Epoch_Converter(init_time.year, init_time.mon, init_time.day, soak_time_end_hour, soak_time_end_min,0);
+		time_ptr = localtime(&soak_time_end_epoch);
+		soak_time_end_hour = time_ptr->tm_hour;
+	}
+	else
+	{
+		Soak_Drain = 0;
+	}
 
 }
 
-void Water_Str_Processing(char s[]) //passed test
+void Water_Str_Processing(int soak_total, char s[]) //passed test
 {
 	// set the start_time
 	int num;
+	
+	struct tm *time_ptr;
 	do
 	{
 		water_time_cur = (struct Water_Mode_Time *)malloc(sizeof(struct Water_Mode_Time));
@@ -398,9 +442,19 @@ void Water_Str_Processing(char s[]) //passed test
 			water_time_cur->start_min = num%100;
 			water_time_cur->start_sec = 0;
 			
+			if(soak_total + init_time.hour > 24)
+			{
+				water_start_day = init_time.day + 1;
+			}
+			else
+			{
+				water_start_day = init_time.day;
+			}
+			water_time_cur->start_epoch = Epoch_Converter(init_time.year, init_time.mon, water_start_day, water_time_cur->start_hour, water_time_cur->start_min, water_time_cur->start_sec);
+			
 			water_time_cur->end_hour = water_time_cur->start_hour;
 			water_time_cur->end_min = water_time_cur->start_min;
-						
+			
 			//scan which action it should do
 			if(strcspn(water_time_cur->str, "W") == 4)  //for water
 			{
@@ -410,6 +464,8 @@ void Water_Str_Processing(char s[]) //passed test
 			{
 				water_time_cur->end_sec = water_time_cur->start_sec + Pour_Time_Diff;
 			}
+			
+			water_time_cur->end_epoch = Epoch_Converter(init_time.year, init_time.mon, water_start_day, water_time_cur->end_hour, water_time_cur->end_min, water_time_cur->end_sec);
 			
 			water_time_head = water_time_cur;
 		}
@@ -422,6 +478,16 @@ void Water_Str_Processing(char s[]) //passed test
 			water_time_cur->start_min = num%100;
 			water_time_cur->start_sec = 0;
 			
+			if(soak_total + init_time.hour > 24)
+			{
+				water_start_day = init_time.day + 1;
+			}
+			else
+			{
+				water_start_day = init_time.day;
+			}
+			water_time_cur->start_epoch = Epoch_Converter(init_time.year, init_time.mon, water_start_day, water_time_cur->start_hour, water_time_cur->start_min, water_time_cur->start_sec);
+			
 			water_time_cur->end_hour = water_time_cur->start_hour;
 			water_time_cur->end_min = water_time_cur->start_min;
 						
@@ -435,6 +501,8 @@ void Water_Str_Processing(char s[]) //passed test
 				water_time_cur->end_sec = water_time_cur->start_sec + Pour_Time_Diff;
 			}
 			
+			water_time_cur->end_epoch = Epoch_Converter(init_time.year, init_time.mon, water_start_day, water_time_cur->end_hour, water_time_cur->end_min, water_time_cur->end_sec);
+			
 			water_time_prev->next = water_time_cur;
 		}
 		water_time_prev = water_time_cur;
@@ -443,6 +511,22 @@ void Water_Str_Processing(char s[]) //passed test
 	
 	
 	water_time_cur = water_time_head;  // for the poinnter start form head
+	
+	while(soak_time_end_epoch > water_time_cur->start_epoch)
+	{
+		water_time_cur = water_time_cur->next;
+		if(water_time_cur == NULL)
+		{
+			water_time_cur = water_time_head;  
+			water_start_day++;
+			
+		}
+	}
+	water_time_cur->start_epoch = Epoch_Converter(init_time.year, init_time.mon, water_start_day, water_time_cur->start_hour, water_time_cur->start_min, water_time_cur->start_sec);			
+	time_ptr = localtime(&water_time_cur->start_epoch);
+	water_start_day = time_ptr->tm_mday;
+	
+	
 }
 void Light_Str_Processing(char light_date[], char s[])  //passed test 
 {
@@ -450,8 +534,7 @@ void Light_Str_Processing(char light_date[], char s[])  //passed test
 	//set the start_time
 	int num;
 	int LD = atoi(light_date);
-	time_t n;
-  struct tm t1;
+	
 	struct tm *nPtr;
 	
 	do 
@@ -471,17 +554,10 @@ void Light_Str_Processing(char light_date[], char s[])  //passed test
 			light_time_cur->start_min = num%100;
 			light_time_cur->start_day = init_time.day + LD - 1;
 			
-			t1.tm_year = init_time.year - 1900;
-			t1.tm_mon = init_time.mon - 1;
-			t1.tm_mday = light_time_cur->start_day;
-			t1.tm_hour = light_time_cur->start_hour;
-			t1.tm_min = light_time_cur->start_min;
-			t1.tm_sec = 0;
-			
-			n = mktime(&t1);
-			nPtr = localtime(&n);
+			light_time_cur->start_epoch = Epoch_Converter(init_time.year, init_time.mon, light_time_cur->start_day, light_time_cur->start_hour, light_time_cur->start_min, 0);
+			nPtr = localtime(&light_time_cur->start_epoch);
 			light_time_cur->start_day = nPtr->tm_mday;		
-			nPtr = localtime(&n);
+			
 			
 			
 			light_time_cur->str = strtok(NULL, "#");//for turn off
@@ -490,6 +566,8 @@ void Light_Str_Processing(char light_date[], char s[])  //passed test
 			light_time_cur->end_hour = num/100;
 			light_time_cur->end_min = num%100;
 
+			
+						
 			light_time_head = light_time_cur;
 		}
 		else
@@ -501,12 +579,14 @@ void Light_Str_Processing(char light_date[], char s[])  //passed test
 			light_time_cur->start_hour = num/100;
 			light_time_cur->start_min = num%100;
 			
+		
 			light_time_cur->str = strtok(NULL, "#");//for turn off
 			
 			num = atoi(light_time_cur->str);
 			light_time_cur->end_hour = num/100;
 			light_time_cur->end_min = num%100;
-					
+			
+			
 			light_time_prev->next = light_time_cur; 
 		}
 		
@@ -541,7 +621,7 @@ void Str_Split(char s[]) //s[] is the str from the Internet    //passed test
 	 
 	 Sever_Time_Str_Processing(atoi(Internet_Str[0]));
 	 Soak_Str_Processing(atoi(Internet_Str[1]), atoi(Internet_Str[2]));
-	 Water_Str_Processing(Internet_Str[4]);
+	 Water_Str_Processing(atoi(Internet_Str[1]), Internet_Str[4]);
 	 Light_Str_Processing(Internet_Str[5], Internet_Str[6]);
 }
 
@@ -600,10 +680,10 @@ int main(void)
 		
 		//detect whether it is time to turn on Motor and LED, then execute it.
 		Soak(day, hour, min );
-		Water(hour, min, sec);
+		Water(day, hour, min, sec);
 		Light(mon, day, hour, min);
 		//detect over
-		
+			
 		
 		
 		/* check if any packet received */
