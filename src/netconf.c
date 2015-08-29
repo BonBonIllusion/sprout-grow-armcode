@@ -70,6 +70,8 @@ struct data data;
 uint32_t UpdateTimer = 0;
 uint16_t sent_count = 0;
 struct ip_addr server_ip;
+char* schedule_string;
+int* schedule_got;
 
 #ifdef USE_DHCP
 uint32_t DHCPfineTimer = 0;
@@ -84,6 +86,8 @@ err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 void domainFound(const char *, struct ip_addr *, void *);
 void update_sensors(void);
 void connect_close(struct tcp_pcb *);
+err_t getScheduleConnectCallback(void *arg, struct tcp_pcb *tpcb, err_t err);
+err_t scheduleRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err);
 
 /**
   * @brief  Initializes the lwIP stack
@@ -385,6 +389,31 @@ void send_sensors(int temp,int humid)
 		tcp_connect(testpcb, &server_ip, DEST_PORT, connectCallback);
 }
 
+void get_schedule(int* s,char* p)
+{
+    /* create an ip */
+    //IP4_ADDR(&ip, 192,168,0,24);    //IP of my PHP server
+	
+		/* clear screen */
+		LCD_ClearLine(Line5);
+		LCD_ClearLine(Line6);
+		LCD_ClearLine(Line7);
+	
+	  schedule_string = p;
+		schedule_got = s;
+	
+    /* create the control block */
+    testpcb = tcp_new();    //testpcb is a global struct tcp_pcb
+                            // as defined by lwIP
+
+    /* register callbacks with the pcb */
+    tcp_recv(testpcb, scheduleRecvCallback);
+	
+		/* new connect */
+		LCD_DisplayStringLine(Line5,(uint8_t*)"  Connecting to server...");
+		tcp_connect(testpcb, &server_ip, DEST_PORT, getScheduleConnectCallback);
+}
+
 /* connection established callback, err is unused and only return 0 */
 err_t connectCallback(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
@@ -392,7 +421,32 @@ err_t connectCallback(void *arg, struct tcp_pcb *tpcb, err_t err)
     uint32_t len = strlen(string);
 		uint8_t text[20];
 	
-		sprintf(string, "GET /sprout-grow/push_sensor.php?temp=%d&humid=%d HTTP/1.1\r\nHost: %s\r\n\r\n", data.temp, data.humid, data.ip);
+		sprintf(string, "GET /sprout-grow/php/push_sensor.php?temp=%d&humid=%d HTTP/1.1\r\nHost: %s\r\n\r\n", data.temp, data.humid, data.ip);
+
+    /* push to buffer */
+    if (tcp_write(testpcb, string, strlen(string), TCP_WRITE_FLAG_COPY)) {
+				sprintf((char*)text, "  WRITE ERROR: Code: %d", error);
+				LCD_DisplayStringLine(Line5,(uint8_t*)text);
+        return 1;
+    }
+
+    /* now send */
+    if (tcp_output(testpcb)) {
+				sprintf((char*)text, "  SENT ERROR: Code: %d", error);
+				LCD_DisplayStringLine(Line5,(uint8_t*)text);
+        return 1;
+    }
+    return ERR_OK;
+}
+
+/* connection established callback, err is unused and only return 0 */
+err_t getScheduleConnectCallback(void *arg, struct tcp_pcb *tpcb, err_t err)
+{
+    char string[100];
+    uint32_t len = strlen(string);
+		uint8_t text[20];
+	
+		sprintf(string, "GET /sprout-grow/php/get_schedule_string.php HTTP/1.1\r\nHost: %s\r\n\r\n", data.ip);
 
     /* push to buffer */
     if (tcp_write(testpcb, string, strlen(string), TCP_WRITE_FLAG_COPY)) {
@@ -445,6 +499,51 @@ err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 						}
 						sprintf((char*)text, "  Count:%u", sent_count);
 						LCD_DisplayStringLine(Line7,text);
+					} else {
+						LCD_DisplayStringLine(Line7,(uint8_t*)"  Failed to load content.");
+					}
+				} else {
+					hs.state = 1;
+					LCD_DisplayStringLine(Line6,(uint8_t*)"  HTTP ERROR");
+				}
+				pbuf_free(p);
+        connect_close(testpcb);
+    }
+    return ERR_OK;
+}
+
+err_t scheduleRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
+{
+		struct http_state hs;
+		char* tdata;
+		uint8_t text[20];
+	
+		/* clear screen */
+		LCD_ClearLine(Line5);
+		LCD_ClearLine(Line6);
+		LCD_ClearLine(Line7);
+	
+		LCD_DisplayStringLine(Line5,(uint8_t*)"  Data recieved.");
+	
+    if (p == NULL || err != ERR_OK) {
+				LCD_DisplayStringLine(Line6,(uint8_t*)"  Host closed.");
+			  pbuf_free(p);
+        connect_close(testpcb);
+        return ERR_ABRT;
+    } else {
+			
+				tcp_recved(testpcb, p->tot_len);
+				tdata = p->payload;
+			
+				if (strstr(tdata, "200 OK") != NULL)
+				{
+					hs.state = 0;
+					hs.body = strstr(tdata, "\r\n\r\n") + 4*sizeof(char);
+					if(hs.body != NULL) {
+						strcpy(schedule_string, hs.body);
+						*schedule_got = 1;
+						LCD_DisplayStringLine(Line6,(uint8_t*)"  HTTP OK");
+						LCD_DisplayStringLine(Line7,(uint8_t*)"  Schedule recved.");
 					} else {
 						LCD_DisplayStringLine(Line7,(uint8_t*)"  Failed to load content.");
 					}
