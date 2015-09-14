@@ -70,8 +70,8 @@ struct data data;
 uint32_t UpdateTimer = 0;
 uint16_t sent_count = 0;
 struct ip_addr server_ip;
-char* schedule_string;
-int* schedule_got;
+char* ssp;
+int* sgp;
 
 #ifdef USE_DHCP
 uint32_t DHCPfineTimer = 0;
@@ -399,8 +399,8 @@ void get_schedule(int* s,char* p)
 		LCD_ClearLine(Line6);
 		LCD_ClearLine(Line7);
 	
-	  schedule_string = p;
-		schedule_got = s;
+	  ssp = p;
+		sgp = s;
 	
     /* create the control block */
     testpcb = tcp_new();    //testpcb is a global struct tcp_pcb
@@ -540,8 +540,8 @@ err_t scheduleRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
 					hs.state = 0;
 					hs.body = strstr(tdata, "\r\n\r\n") + 4*sizeof(char);
 					if(hs.body != NULL) {
-						strcpy(schedule_string, hs.body);
-						*schedule_got = 1;
+						strcpy(ssp, hs.body);
+						*sgp = 1;
 						LCD_DisplayStringLine(Line6,(uint8_t*)"  HTTP OK");
 						LCD_DisplayStringLine(Line7,(uint8_t*)"  Schedule recved.");
 					} else {

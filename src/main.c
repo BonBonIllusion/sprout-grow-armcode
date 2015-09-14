@@ -297,31 +297,22 @@ void Soak(int day, int hour, int min)
 }
 void Water(int day, int hour, int min, int sec)
 {	
-	if(water_start_day == day)
-	{
-		Enter_Water = 1;
+	if(water_time_cur->start_hour == hour && water_time_cur->start_min == min && water_time_cur->start_sec == sec)
+	{		
+		Motor_On();
 	}
-	
-	if(Soak_Drain == 0 && Enter_Water == 1)
+	else if(water_time_cur->end_hour == hour && water_time_cur->end_min == min && water_time_cur->end_sec == sec)
 	{
-		if(water_time_cur->start_hour == hour && water_time_cur->start_min == min && water_time_cur->start_sec == sec)
-		{		
-			Motor_On();
+		Motor_Off();
+		if(water_time_cur->next == NULL)
+		{
+			water_time_cur = water_time_head;
 		}
-		else if(water_time_cur->end_hour == hour && water_time_cur->end_min == min && water_time_cur->end_sec == sec)
+		else
 		{
 			water_time_cur = water_time_cur->next;
 		}		
 	}
-			{
-				water_time_cur = water_time_head;
-			}
-			else
-			{
-				water_time_cur = water_time_cur->next;
-			}		
-		}
-	}	
 }
 
 
@@ -655,7 +646,7 @@ int main(void)
 	/* Initilaize the LwIP stack */
 	LwIP_Init();
 	DNS_Init();
-	get_schedule(schedule_got,schedule_string); // schedule string store in schedule_string
+	get_schedule(&schedule_got,schedule_string); // schedule string store in schedule_string
 	while(!schedule_got); // wait until string got
 	
 	/* Main Loop */
