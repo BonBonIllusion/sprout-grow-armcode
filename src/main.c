@@ -645,14 +645,14 @@ int main(void)
 	ETH_BSP_Config();
 	/* Initilaize the LwIP stack */
 	LwIP_Init();
+	schedule_init(&schedule_got,schedule_string); // schedule string store in schedule_string
 	DNS_Init();
-	get_schedule(&schedule_got,schedule_string); // schedule string store in schedule_string
-	while(!schedule_got); // wait until string got
+	//while(!schedule_got); // wait until string got
 	
 	/* Main Loop */
 	
 	//process ste str form internet
-	Str_Split(s);   // s is temp string
+	//Str_Split(s);   // s is temp string
 	RTC_Config();
 	Time_Date_Setting(init_time.year, init_time.mon, init_time.day, init_time.hour +3, init_time.min, init_time.sec);
 	
@@ -675,9 +675,9 @@ int main(void)
 		sec = RTC_TimeStruct.RTC_Seconds;
 		
 		//detect whether it is time to turn on Motor and LED, then execute it.
-		Soak(day, hour, min );
-		Water(day, hour, min, sec);
-		Light(mon, day, hour, min);
+		//Soak(day, hour, min );
+		//Water(day, hour, min, sec);
+		//Light(mon, day, hour, min);
 		//detect over
 			
 		

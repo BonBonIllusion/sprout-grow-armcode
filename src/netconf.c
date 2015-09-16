@@ -215,7 +215,7 @@ void LwIP_Periodic_Handle(__IO uint32_t localtime)
 	if (localtime - UpdateTimer >= 5 * 60 * 1000UL)
   {
     UpdateTimer = localtime;
-		update_sensors();
+		//update_sensors();
   }
 }
 
@@ -389,7 +389,12 @@ void send_sensors(int temp,int humid)
 		tcp_connect(testpcb, &server_ip, DEST_PORT, connectCallback);
 }
 
-void get_schedule(int* s,char* p)
+void schedule_init(int* s,char* p) {
+	  ssp = p;
+		sgp = s;
+}
+
+void get_schedule()
 {
     /* create an ip */
     //IP4_ADDR(&ip, 192,168,0,24);    //IP of my PHP server
@@ -398,9 +403,6 @@ void get_schedule(int* s,char* p)
 		LCD_ClearLine(Line5);
 		LCD_ClearLine(Line6);
 		LCD_ClearLine(Line7);
-	
-	  ssp = p;
-		sgp = s;
 	
     /* create the control block */
     testpcb = tcp_new();    //testpcb is a global struct tcp_pcb
@@ -560,6 +562,7 @@ err_t scheduleRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
 void domainFound(const char *name, struct ip_addr *ipaddr, void *arg) {
 		LCD_DisplayStringLine(Line5,(uint8_t*)"  Success to resolve domain!");
 	  server_ip = *ipaddr;
+		get_schedule();
 		 sprintf(data.ip, "%u.%u.%u.%u", 
 			ip4_addr1(ipaddr), 
 			ip4_addr2(ipaddr), 

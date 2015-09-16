@@ -37,8 +37,8 @@ void LwIP_Init(void);
 void LwIP_Pkt_Handle(void);
 void LwIP_Periodic_Handle(__IO uint32_t localtime);
 void send_sensors(int, int);
-void DNS_Init();
-void get_schedule(int* s,char* p);
+void DNS_Init(void);
+void schedule_init(int* s,char* p);
 
 #ifdef __cplusplus
 }
