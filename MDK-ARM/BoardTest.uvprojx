@@ -997,6 +997,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>S_W_L</GroupName>
+          <Files>
+            <File>
+              <FileName>S_W_L.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -2029,6 +2039,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>S_W_L</GroupName>
+          <Files>
+            <File>
+              <FileName>S_W_L.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
@@ -2396,7 +2416,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STM32F4_EVB, STM32F40_41xxx, USE_STDPERIPH_DRIVER, USE_ULPI_PHY</Define>
               <Undefine></Undefine>
-              <IncludePath>..\;..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\..\Libraries\STM32F4x7_ETH_Driver\inc;..\..\..\Utilities\STM32_EVAL\Common;..\..\..\Utilities\STM32_EVAL\STM32F4_EVB;..\..\..\Utilities\STM32_EVAL\Common;..\..\..\Utilities\Third_Party\lwip_v1.3.2\port\STM32F4x7\;..\..\..\Utilities\Third_Party\lwip_v1.3.2\port\STM32F4x7\Standalone;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\ipv4;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\lwip;..\inc;..\dht11\dht11;..\dht11\gpio;..\dht11\timer;..\..\Motor_LED_Control</IncludePath>
+              <IncludePath>..\;..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include;..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc;..\..\..\Libraries\STM32F4x7_ETH_Driver\inc;..\..\..\Utilities\STM32_EVAL\Common;..\..\..\Utilities\STM32_EVAL\STM32F4_EVB;..\..\..\Utilities\STM32_EVAL\Common;..\..\..\Utilities\Third_Party\lwip_v1.3.2\port\STM32F4x7\;..\..\..\Utilities\Third_Party\lwip_v1.3.2\port\STM32F4x7\Standalone;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\ipv4;..\..\..\Utilities\Third_Party\lwip_v1.3.2\src\include\lwip;..\inc;..\dht11\dht11;..\dht11\gpio;..\dht11\timer;..\..\Motor_LED_Control;..\..\S_W_L</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -3119,6 +3139,16 @@
               <FileName>Motor_LED_Control.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Motor_LED_Control\Motor_LED_Control.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>S_W_L</GroupName>
+          <Files>
+            <File>
+              <FileName>S_W_L.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
             </File>
           </Files>
         </Group>
