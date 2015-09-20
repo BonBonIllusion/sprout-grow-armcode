@@ -52,7 +52,7 @@ __IO uint32_t LocalTime = 0; /* this variable is used to create a time reference
 static __IO uint32_t uwTimingDelay;
 char schedule_string[50];
 int schedule_got = 0;
-
+struct Init_Time *Init_time;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -63,6 +63,8 @@ int schedule_got = 0;
   */
 
 
+RTC_TimeTypeDef RTC_TimeStruct;
+RTC_DateTypeDef RTC_DateStruct;
 
 void RTC_Config()
 {
@@ -89,20 +91,20 @@ void RTC_Config()
 void Time_Date_Setting(u16 year, u8 mon, u8 day, u8 hour, u8 min, u8 sec)
 {
 	
-	RTC_TimeTypeDef RTC_TimeStruct_main;
-	RTC_DateTypeDef RTC_DateStruct_main;
+	//RTC_TimeTypeDef RTC_TimeStruct;
+	//RTC_DateTypeDef RTC_DateStruct;
 	
 	
-	RTC_TimeStruct_main.RTC_Hours = hour;
-	RTC_TimeStruct_main.RTC_Minutes = min;
-	RTC_TimeStruct_main.RTC_Seconds = sec;
+	RTC_TimeStruct.RTC_Hours = hour;
+	RTC_TimeStruct.RTC_Minutes = min;
+	RTC_TimeStruct.RTC_Seconds = sec;
 	
-	RTC_DateStruct_main.RTC_Year = year;
-	RTC_DateStruct_main.RTC_Month = mon;
-	RTC_DateStruct_main.RTC_Date = day;
+	RTC_DateStruct.RTC_Year = year;
+	RTC_DateStruct.RTC_Month = mon;
+	RTC_DateStruct.RTC_Date = day;
 	
-	RTC_SetTime(RTC_Format_BIN, &RTC_TimeStruct_main);
-	RTC_SetDate(RTC_Format_BIN, &RTC_DateStruct_main);
+	RTC_SetTime(RTC_Format_BIN, &RTC_TimeStruct);
+	RTC_SetDate(RTC_Format_BIN, &RTC_DateStruct);
 	
 }
 
@@ -149,9 +151,9 @@ int main(void)
 	/* Main Loop */
 	
 	//process ste str form internet
-	Str_Split(s);   // s is temp string
+	Str_Split(s, Init_time);   // s is temp string
 	RTC_Config();
-	Time_Date_Setting(init_time.year, init_time.mon, init_time.day, init_time.hour +3, init_time.min, init_time.sec);
+	Time_Date_Setting(Init_time->year, Init_time->mon, Init_time->day, Init_time->hour +3, Init_time->min, Init_time->sec);
 	
 	
 	

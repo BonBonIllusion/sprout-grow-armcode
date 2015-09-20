@@ -23,7 +23,7 @@
 #include "lwip/mem.h"
 #include "lwip/memp.h"
 #include "lwip/tcp.h"
-#include "lwip/udp.h"
+#include "lwip/udp.h" 	
 #include "netif/etharp.h"
 #include "lwip/dhcp.h"
 #include "lwip/dns.h"
@@ -34,6 +34,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "dht11.h"
+#include "S_W_L.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 #define MAX_DHCP_TRIES        4
