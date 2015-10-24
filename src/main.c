@@ -118,7 +118,7 @@ void Time_Date_Setting(u16 year, u8 mon, u8 day, u8 hour, u8 min, u8 sec)
 
 int main(void)
 {
-	char s[] = "1438246329,6,3,5,#0530W#1200P,3,#0800O#1900C#0900O#1800C";  // for str_processing test
+	char s[] = "1442936700,0,1,4,#2346W,3,#0800O#1900C#0900O#1800C";  // for str_processing test
 	
 	
 	RCC_ClocksTypeDef RCC_Clocks;
