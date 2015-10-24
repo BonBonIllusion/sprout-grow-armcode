@@ -142,16 +142,18 @@ int main(void)
 	ETH_BSP_Config();
 	/* Initilaize the LwIP stack */
 	LwIP_Init();
+	schedule_init(&schedule_got,schedule_string); // schedule string store in schedule_string
 	DNS_Init();
-	get_schedule(&schedule_got,schedule_string); // schedule string store in schedule_string
-	while(!schedule_got); // wait until string got
+	//while(!schedule_got); // wait until string got
 	
 	LCD_DisplayStringLine(Line2, (uint8_t*)schedule_string);
 	LCD_DisplayStringLine(Line3, (uint8_t*)"0");
 	/* Main Loop */
 	
 	//process ste str form internet
+
 	Str_Split(s, Init_time);   // s is temp string
+
 	RTC_Config();
 	Time_Date_Setting(Init_time->year, Init_time->mon, Init_time->day, Init_time->hour +3, Init_time->min, Init_time->sec);
 	
