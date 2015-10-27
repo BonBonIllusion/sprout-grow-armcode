@@ -992,19 +992,17 @@
             <File>
               <FileName>Motor_LED_Control.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Motor_LED_Control\Motor_LED_Control.c</FilePath>
+              <FilePath>..\motor_led\Motor_LED_Control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Motor_LED_Control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\motor_led\Motor_LED_Control.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>S_W_L</GroupName>
-          <Files>
-            <File>
-              <FileName>S_W_L.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
@@ -2034,19 +2032,17 @@
             <File>
               <FileName>Motor_LED_Control.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Motor_LED_Control\Motor_LED_Control.c</FilePath>
+              <FilePath>..\motor_led\Motor_LED_Control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Motor_LED_Control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\motor_led\Motor_LED_Control.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>S_W_L</GroupName>
-          <Files>
-            <File>
-              <FileName>S_W_L.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
@@ -3138,19 +3134,17 @@
             <File>
               <FileName>Motor_LED_Control.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Motor_LED_Control\Motor_LED_Control.c</FilePath>
+              <FilePath>..\motor_led\Motor_LED_Control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Motor_LED_Control.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\motor_led\Motor_LED_Control.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
           <GroupName>S_W_L</GroupName>
-          <Files>
-            <File>
-              <FileName>S_W_L.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\S_W_L\S_W_L.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>
