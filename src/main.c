@@ -1,27 +1,10 @@
 /**
   ******************************************************************************
-  * @file    Project/STM32F4_EVB_Demo/main.c
-  * @author  MCD Application Team
+  * @file    STM32F4_EVB_Sprout/main.c
+  * @author  BonBon Illusion
   * @version V1.0.0
-  * @date    18-March-2013
+  * @date    10-October-2015
   * @brief   Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
-  *
-  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        http://www.st.com/software_license_agreement_liberty_v2
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
   ******************************************************************************
   */
 
@@ -36,7 +19,6 @@
 #include "dht11.h"
 #include "stdlib.h"
 #include "S_W_L.h"
-
 
 /** @addtogroup STM32F4xx_StdPeriph_Templates
   * @{
@@ -109,12 +91,12 @@ void Time_Date_Setting(u16 year, u8 mon, u8 day, u8 hour, u8 min, u8 sec)
 }
 
 
-//if I start the soaking period at 11 O'clock and the total soaking period is 5 hours
-//what I coded would not do well, because I can't deal with the overnight problem
-//and if I solve the overnight problem, I have to be careful of the Water fun
-//there may be Water fun conflicts Soak fun =>>Water fun starts at 2 am but Soak fun ends at 3 am
-
-
+/**
+ * if I start the soaking period at 11 O'clock and the total soaking period is 5 hours
+ * what I coded would not do well, because I can't deal with the overnight problem
+ * and if I solve the overnight problem, I have to be careful of the Water fun
+ * there may be Water fun conflicts Soak fun =>>Water fun starts at 2 am but Soak fun ends at 3 am 
+ */
 
 int main(void)
 {
@@ -182,8 +164,6 @@ int main(void)
 		Light(mon, day, hour, min);
 		//detect over
 			
-		
-		
 		/* check if any packet received */
 		if (ETH_CheckFrameReceived())
 		{
@@ -192,9 +172,6 @@ int main(void)
 		}
 		/* handle periodic timers for LwIP */
 		LwIP_Periodic_Handle(LocalTime);
-		
-		
-		
 		
 	}
 }
