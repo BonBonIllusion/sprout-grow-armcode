@@ -11,10 +11,6 @@
 #define Water_Time_Diff 10;
 #define Pour_Time_Diff 10;
 
-
-
-
-
 struct Init_Time
 {
 	int year;
